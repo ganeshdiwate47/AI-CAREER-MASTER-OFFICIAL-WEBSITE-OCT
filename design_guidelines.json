@@ -1,0 +1,223 @@
+{
+  "brand_identity": {
+    "name": "AI Career Master",
+    "tagline": "AI Powered Career Acceleration Platform",
+    "positioning": "Bridging the gap between education and employment",
+    "aesthetic_direction": "Premium Corporate Modern EdTech - Deep Navy & Royal Blue Editorial with Restrained Gold accents and Kinetic Vibrant Orange CTAs",
+    "bilingual_support": {
+      "default": "en",
+      "languages": ["en", "mr"],
+      "labels": {
+        "en": "English",
+        "mr": "मराठी (Marathi)"
+      },
+      "font_recommendations": {
+        "english_headings": "Outfit / Plus Jakarta Sans / Clash Display",
+        "english_body": "Inter / Plus Jakarta Sans",
+        "marathi_headings": "Noto Sans Devanagari / Tiro Devanagari Marathi",
+        "marathi_body": "Noto Sans Devanagari"
+      }
+    }
+  },
+  "color_palette": {
+    "primary_dark_navy": "#0B132B",
+    "secondary_deep_navy": "#1C2541",
+    "brand_royal_blue": "#2563EB",
+    "accent_vibrant_orange": "#FF5722",
+    "restrained_gold_hairline": "#D4AF37",
+    "neutral_dark_text": "#0F172A",
+    "neutral_light_bg": "#F8FAFC",
+    "pure_white": "#FFFFFF",
+    "surface_glass_dark": "rgba(11, 19, 43, 0.85)",
+    "surface_glass_light": "rgba(255, 255, 255, 0.85)",
+    "border_subtle": "rgba(212, 175, 55, 0.2)",
+    "border_light": "rgba(226, 232, 240, 0.8)",
+    "gradient_hero": "linear-gradient(135deg, #0B132B 0%, #1C2541 60%, #1E3A8A 100%)",
+    "gradient_accent_gold": "linear-gradient(90deg, #D4AF37 0%, #F59E0B 100%)",
+    "gradient_orange_cta": "linear-gradient(135deg, #FF5722 0%, #EA580C 100%)"
+  },
+  "typography": {
+    "font_family_heading": "'Outfit', 'Noto Sans Devanagari', sans-serif",
+    "font_family_body": "'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif",
+    "font_family_mono": "'JetBrains Mono', monospace",
+    "scales": {
+      "hero_h1": "text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]",
+      "section_h2": "text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight",
+      "subsection_h3": "text-2xl sm:text-3xl font-semibold tracking-normal",
+      "card_h4": "text-xl sm:text-2xl font-semibold",
+      "body_lg": "text-lg sm:text-xl font-normal leading-relaxed",
+      "body_base": "text-base font-normal leading-relaxed",
+      "caption": "text-xs sm:text-sm font-medium tracking-wider uppercase"
+    }
+  },
+  "layout_and_spacing": {
+    "container_padding": "px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto",
+    "section_vertical_spacing": "py-16 sm:py-24 lg:py-32",
+    "grid_bento": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-6 md:gap-8",
+    "border_radius": "rounded-2xl",
+    "card_padding": "p-6 sm:p-8"
+  },
+  "motion_and_interactions": {
+    "scroll_library": "lenis",
+    "animation_framework": "framer-motion",
+    "hover_effects": "transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl",
+    "hero_reveal": "staggered line-by-line masked slide-up reveal with delay 0.1s",
+    "scroll_trigger": "framer-motion viewport={{ once: true, margin: '-50px' }} whileInView={{ opacity: 1, y: 0 }}"
+  },
+  "required_pages": [
+    {
+      "path": "/",
+      "name": "Home",
+      "description": "Main landing showcase featuring 10 essential sections"
+    },
+    {
+      "path": "/about",
+      "name": "About Us",
+      "description": "Mission, Vision, Founder note, Pedagogy, Brand Story"
+    },
+    {
+      "path": "/programs",
+      "name": "Programs",
+      "description": "Searchable & filterable programs catalog by audience and topic"
+    },
+    {
+      "path": "/programs/:slug",
+      "name": "Individual Program Details",
+      "description": "Curriculum breakdown, career paths, outcomes, enrollment lead form"
+    },
+    {
+      "path": "/colleges",
+      "name": "For Colleges",
+      "description": "Institutional partnerships, NAAC/NIRF alignment, MOU request form"
+    },
+    {
+      "path": "/contact",
+      "name": "Contact Us",
+      "description": "Multi-purpose inquiry forms, location info, support channels"
+    },
+    {
+      "path": "/privacy",
+      "name": "Privacy Policy",
+      "description": "Compliance, data protection, student privacy disclosures"
+    },
+    {
+      "path": "/terms",
+      "name": "Terms of Service",
+      "description": "Terms, course access, refund policy, legal notice"
+    }
+  ],
+  "homepage_sections": [
+    {
+      "id": "hero",
+      "name": "Hero Section",
+      "headline_en": "Accelerate Your Career with AI-Powered Industry Mastery",
+      "headline_mr": "AI-संचालित उद्योगातील कौशल्याने तुमचे करिअर वेगवान करा",
+      "ctas": ["Explore Programs", "Partner With Us"],
+      "visual": "Interactive dynamic hero card with gold outline shimmer and ambient navy glow"
+    },
+    {
+      "id": "audience-discovery",
+      "name": "Audience-Based Program Discovery",
+      "audiences": [
+        "Final-Year UG/PG Students",
+        "Fresh Graduates",
+        "Working Professionals",
+        "Teachers & Educators",
+        "Small Business Owners & Entrepreneurs",
+        "Parents",
+        "Colleges & Universities"
+      ]
+    },
+    {
+      "id": "featured-programs",
+      "name": "Featured Programs",
+      "description": "High-impact hands-on certifications tailored for current market demands"
+    },
+    {
+      "id": "8d-framework",
+      "name": "8D Career Transformation Framework(TM)",
+      "pillars": [
+        "1D: Diagnostic Career Mapping",
+        "2D: AI Domain Mastery",
+        "3D: Applied Industry Projects",
+        "4D: Digital Personal Branding",
+        "5D: AI Productivity & Tooling",
+        "6D: Corporate Communication & Soft Skills",
+        "7D: Executive Mentorship & Mock Interviews",
+        "8D: Direct Placement & Opportunity Access"
+      ]
+    },
+    {
+      "id": "student-journey",
+      "name": "Student Transformation Journey",
+      "steps": [
+        "Assessment & Career Profiling",
+        "Skill Gap Analysis & Roadmap",
+        "Hands-on AI Certification",
+        "Live Capstone Projects",
+        "Placement & Interview Acceleration"
+      ]
+    },
+    {
+      "id": "differentiators",
+      "name": "Key Differentiators & Outcomes",
+      "metrics": [
+        "85%+ Salary Jump / First Job Success Rate",
+        "50+ Industry AI Tools Mastered",
+        "100+ Partner Institutions & Recruiters"
+      ]
+    },
+    {
+      "id": "institutional-partnerships",
+      "name": "Institutional Partnership Section",
+      "focus": "Campus Placement Drive, Faculty Development Programs (FDP), AI Innovation Labs"
+    },
+    {
+      "id": "founder-leadership",
+      "name": "Founder & Leadership Section",
+      "note": "Visionary guidance bridging top industry standards and academia"
+    },
+    {
+      "id": "testimonials",
+      "name": "Testimonials & Success Stories",
+      "note": "Student & College Dean video/text reviews with clearly marked placeholders"
+    },
+    {
+      "id": "lead-capture-cta",
+      "name": "Lead Capture CTA & Footer",
+      "features": "Interactive AI Career Strategy Call Booking & Global Footer with Navigation Links"
+    }
+  ],
+  "lead_generation_forms": {
+    "destination": "Google Forms (Configurable via REACT_APP_GOOGLE_FORM_URL or API fallback)",
+    "form_types": [
+      "Student Program Enquiry",
+      "College Partnership Enquiry (MOU / FDP)",
+      "1-on-1 AI Career Growth Strategy Call"
+    ],
+    "fields_required": ["Full Name", "Email Address", "Phone Number / WhatsApp", "Target Audience Category", "Preferred Program / Inquiry Type", "UTM Tracking Parameters"],
+    "features": ["Bilingual Labels", "Client-side Validation", "UTM Capture", "Success Modal/Toast Confirmation"]
+  },
+  "image_urls": {
+    "hero_banner": "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "ai_lab_classroom": "https://images.unsplash.com/photo-1758873268180-d95d10c86588?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "presentation_speaker": "https://images.unsplash.com/photo-1634464660153-468d44306ac4?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "college_campus": "https://images.unsplash.com/photo-1633987027569-a6599b632de7?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "graduates_celebration": "https://images.unsplash.com/photo-1758270703733-3663d99c9dd7?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "student_studying": "https://images.pexels.com/photos/3807755/pexels-photo-3807755.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "founder_placeholder": "https://images.unsplash.com/photo-1758873268131-a2636b120d81?crop=entropy&cs=srgb&fm=jpg&q=85"
+  },
+  "testing_and_accessibility": {
+    "data_testid_convention": "kebab-case, role-based, e.g., data-testid='explore-programs-btn', data-testid='language-toggle-mr', data-testid='lead-form-submit'",
+    "wcag_level": "AA",
+    "minimum_contrast_ratio": "4.5:1 for normal text, 3:1 for headers and interactive controls"
+  },
+  "instructions_to_main_agent": [
+    "Use pure React JS files (.js / .jsx) inside /app/frontend/src.",
+    "Implement bilingual support using an intuitive language Context provider (en/mr) with seamless toggle in header and footer.",
+    "Ensure navigation bar is fixed/glassmorphic with z-50, language switcher, and primary CTA.",
+    "Implement Lenis for smooth momentum scrolling and Framer Motion for scroll-reveal effects.",
+    "All forms must capture inquiries, store in local state/localStorage with option to forward to Google Forms, and show success toasts via Sonner.",
+    "Ensure all interactive elements have data-testid attributes according to test conventions."
+  ]
+}
