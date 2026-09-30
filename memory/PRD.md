@@ -31,6 +31,13 @@ Build Version 1.0 of the official AI Career Master website (AI Powered Career Ac
 - Original photos → replace files in frontend/public/images/
 - Verified testimonials, student-story video, result figures → src/data/site.js (TESTIMONIALS/STATS)
 
+## Implemented (2026-09-30) — Phase 2 update
+- Approved final logo extracted from owner attachment (brand/logo.png + cropped favicon); previous-branding assets removed from display.
+- Program catalogue migrated to MongoDB with admin CRUD at /admin (login: HMAC httpOnly cookie); homepage rebuilt to the v1.0 section order; PLACE EASILY 10-month roadmap (infographic source), AI for All 12 modules (brochure source, EN+MR), corrected durations (10-month / 21-day / 9-day / 3-day workshop), FDP dual-name, vyapari custom enquiry fields, configurable student eligibility.
+- Leads: extended fields (city, preferred language, student count, business type/challenge/AI applications), duplicate handling (phone+type+program / 24h), status workflow + analytics dashboard, cookie-protected CSV export, DB-first persistence with integration status logging.
+- Social footer links (Instagram/Facebook/LinkedIn-derived/YouTube/WhatsApp), sitemap.xml, canonical support via REACT_APP_PUBLIC_URL.
+- CRM adapter layer (Coacheasily-first, modular) with documented field mapping — inactive until account verification.
+
 ## Prioritized Backlog
 - P0: Configure Google Forms env vars (owner supplies formResponse URL + entry IDs); Coacheasily capability audit before connecting; deploy to Hostinger.
 - P1: Owner content pass (photos/testimonials/figures), sitemap.xml + OG image, WhatsApp chat API button tracking.

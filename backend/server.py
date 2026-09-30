@@ -58,6 +58,13 @@ class LeadIn(BaseModel):
     consent: bool
     lang: Optional[str] = Field(default="en", max_length=8)
     page: Optional[str] = Field(default=None, max_length=400)
+    city: Optional[str] = Field(default=None, max_length=120)
+    audience_category: Optional[str] = Field(default=None, max_length=120)
+    preferred_language: Optional[str] = Field(default=None, max_length=40)
+    student_count: Optional[str] = Field(default=None, max_length=60)
+    business_type: Optional[str] = Field(default=None, max_length=200)
+    main_challenge: Optional[str] = Field(default=None, max_length=1000)
+    ai_applications: Optional[str] = Field(default=None, max_length=1000)
     utm: Dict[str, str] = Field(default_factory=dict)
 
     @field_validator("consent")
@@ -134,15 +141,15 @@ AI_MODELS = {
     "gemini": ("gemini", "gemini-3.1-pro-preview"),
 }
 
-AI_KB_EN = """1. PLACE EASILY — Career Transformation Program (final-year students, fresh graduates) — flagship 90-day journey: diagnostic career mapping, AI skills, resume, LinkedIn, mock interviews, placement drives.
-2. 21 Days CM Placement Sprint (final-year students, fresh graduates) — intensive 21-day placement prep: aptitude, company patterns, ATS resume, GD & HR rounds.
-3. AI for All (absolute beginners, all audiences incl. parents) — Marathi-first AI literacy, 10 practical modules: basic computer to AI tools, prompt engineering, data science basics, vibe coding. No IT background needed.
-4. AI for Vyapari (small business owners) — AI posters & product photos, WhatsApp marketing, ads, automated customer replies, daily ops.
-5. AI for Teachers (educators) — lesson plans, worksheets, assessments, presentations, parent communication with AI.
-6. AI for Students (students & parents) — AI study systems, notes, projects, presentations, intro to coding, career planning.
-7. AI for Working Professionals — AI Career Growth Strategy (working professionals) — AI productivity stack, workflow automation, personal brand, 90-day growth plan; free 1-on-1 strategy call.
-8. AI Software Generation (professionals, graduates, business owners) — build custom GPTs, chatbots, AI agents, no-code automations.
-Format: offline at Sai Computers, Tarale (Satara) + online live across Maharashtra. Teaching language: Marathi-first. Mentors: Ganesh Diwate (10+ yrs corporate: Tata International, P&G, Mondelez, Volkswagen) and Prashant Amane (30+ yrs education, MKCL Master Trainer). Contact: +91 91751 57977, careermaster1998@gmail.com, www.aicareermaster.com."""
+AI_KB_EN = """1. PLACE EASILY — Career Transformation Program (final-year UG & PG students) — flagship 10-month structured journey: monthly themes from Career Discovery & Assessment (Career DNA, psychometric, SWOT), Planning & Professional Mindset, Communication & Soft Skills, Digital Productivity (MS Office, Google Workspace, Canva), AI Skills & Future Technologies (ChatGPT/Gemini/Claude, prompt engineering, AI ethics), Domain Upskilling, Industry Exposure & Branding (ATS resume, LinkedIn, portfolio), Placement Accelerator (aptitude, GD, HR/technical interviews), Career Launch Strategy (job search, salary negotiation), and Career Excellence & Graduation with the Career Master Professional Certification. Continuous tracking: Career DNA, readiness scores, AI Readiness Index, SkillGap Matrix, dashboards. '10 Months. One Journey. Lifelong Impact.'
+2. 21-Day CM Placement Sprint (final-year students, fresh graduates) — intensive 21-day placement-preparation crash course: aptitude, resume polish, GD & HR mock rounds, placement drive preparation. No day-wise curriculum published.
+3. AI for All (absolute beginners, all audiences incl. parents; no coding knowledge required) — Marathi-first complete AI learning journey in 12 modules: AI Fundamentals; Prompt Engineering (RACE/CARE/STAR/CRISPE, 50+ prompts); AI Productivity (ChatGPT, Gemini, Copilot); AI Research (Perplexity, NotebookLM); AI Content Creation (blogs, social, email, ads); AI Design & Images (posters, logos, infographics); AI Video Creation (reels, shorts, talking avatars); AI for Office Work (Word, Excel, PowerPoint, Gmail, Docs, Sheets); Custom GPTs & AI Agents; AI by Industry (Sales, HR, Finance, Marketing, Healthcare, Education); Real World Projects; Portfolio & Certification. Delivery: 9-day format (timetable to be confirmed). Mix of Marathi & English. 100+ AI tools.
+4. AI for Vyapari (small-business owners, shopkeepers, entrepreneurs) — customizable program: AI posters & product photos, WhatsApp marketing, ads, automated customer replies, billing & daily operations. Enquiry captures business type, main challenge and desired AI applications.
+5. AI for Teachers / Faculty Development Program (teachers, faculty, institutions) — AI lesson preparation, teaching resources, assessments, presentations, parent communication, responsible AI; offered institutionally as an FDP.
+6. AI for Students (school & college students; age/level eligibility configurable per batch) — AI literacy, research, study productivity, presentations, projects, responsible AI usage.
+7. AI Career Growth Strategy (working professionals) — a three-day workshop: identify AI skills relevant to your role, explore career directions, and leave with a personal future career action plan. Free 1-on-1 strategy call available.
+8. AI Software Generation (professionals, graduates, business owners) — practical creation of AI agents, chatbots, custom GPTs and workflow automations with no-code/low-code tools. Title, curriculum and delivery format are editable per batch.
+Format: offline at Sai Computers, Tarale (Satara) + online live across Maharashtra. Teaching language: Marathi-first (mix of Marathi & English). Mentors: Ganesh Diwate (10+ yrs corporate: Tata International, P&G, Mondelez, Volkswagen) and Prashant Amane (30+ yrs education, MKCL Master Trainer). Contact: +91 91751 57977, careermaster1998@gmail.com, www.aicareermaster.com."""
 
 
 def _ai_system(lang: str) -> str:
@@ -243,21 +250,43 @@ async def health():
 
 @api_router.post("/leads")
 async def create_lead(lead: LeadIn, request: Request):
+    from datetime import timedelta
+    from extensions import relay_to_coacheasily
     if rate_limited(request.client.host if request.client else "unknown"):
         raise HTTPException(status_code=429, detail="Too many requests. Please try again shortly.")
 
+    now = datetime.now(timezone.utc)
+    phone_norm = "".join(ch for ch in lead.phone if ch.isdigit())[-10:]
+    email_norm = (lead.email or "").strip().lower()
+    program = lead.program or ""
+
+    # Duplicate handling: same phone + type + program within 24h — never stored twice.
+    day_ago = (now - timedelta(hours=24)).isoformat()
+    dup = await db.leads.find_one({
+        "phone_norm": phone_norm, "lead_type": lead.lead_type, "program": program,
+        "created_at": {"$gte": day_ago},
+    }, {"_id": 1})
+    if dup:
+        return {"ok": True, "id": str(dup["_id"]), "stored": True, "duplicate": True, "google_submitted": False}
+
     doc = lead.model_dump()
-    doc["created_at"] = datetime.now(timezone.utc).isoformat()
+    doc["phone_norm"] = phone_norm
+    doc["email_norm"] = email_norm
+    doc["created_at"] = now.isoformat()
+    doc["status"] = "new"
     doc["google_submitted"] = False
     doc["google_result"] = "pending"
+    doc["crm_status"] = "pending"
 
-    result = await db.leads.insert_one(doc)  # store first — MongoDB is the safety net
-    ok, status = await relay_to_google(lead)
+    result = await db.leads.insert_one(doc)  # store first — the DB is the safety net
+    ok, gstatus = await relay_to_google(lead)
+    cok, cstatus = await relay_to_coacheasily(doc)
     await db.leads.update_one(
         {"_id": result.inserted_id},
-        {"$set": {"google_submitted": ok, "google_result": status}},
+        {"$set": {"google_submitted": ok, "google_result": gstatus, "crm_status": cstatus}},
     )
-    return {"ok": True, "id": str(result.inserted_id), "stored": True, "google_submitted": ok}
+    return {"ok": True, "id": str(result.inserted_id), "stored": True, "duplicate": False,
+            "google_submitted": ok, "crm_status": cstatus}
 
 
 @api_router.get("/leads/export")
@@ -286,7 +315,17 @@ async def export_leads(request: Request):
     )
 
 
+from extensions import admin_router, programs_router
+
 app.include_router(api_router)
+app.include_router(programs_router)
+app.include_router(admin_router)
+
+
+@app.on_event("startup")
+async def _seed():
+    from extensions import seed_programs
+    await seed_programs()
 
 
 @app.on_event("shutdown")

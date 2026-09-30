@@ -1,20 +1,31 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin, MessageCircle, ArrowUpRight } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, ArrowUpRight, Instagram, Facebook, Linkedin, Youtube } from "lucide-react";
 import Logo from "./Logo";
 import { LangToggle } from "./Navbar";
 import { CONTACT } from "@/data/site";
-import { featuredPrograms } from "@/data/programs";
 import { useLang } from "@/i18n/LanguageContext";
+import { usePrograms } from "@/context/ProgramsContext";
+
+// Social links supplied by the owner. The LinkedIn URL provided was the admin
+// dashboard (not public) — the public company page form is used instead and
+// should be confirmed by the owner.
+export const SOCIALS = [
+  { id: "instagram", label: "Instagram", href: "https://www.instagram.com/ai.careermaster/", Icon: Instagram },
+  { id: "facebook", label: "Facebook", href: "https://www.facebook.com/profile.php?id=61587908197413", Icon: Facebook },
+  { id: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/company/142922947/", Icon: Linkedin },
+  { id: "youtube", label: "YouTube", href: "https://www.youtube.com/@AI_CareerMaster", Icon: Youtube },
+];
 
 export default function Footer() {
   const { t, L } = useLang();
+  const { featured } = usePrograms();
   const year = new Date().getFullYear();
   return (
     <footer className="relative bg-navy text-white" data-testid="site-footer">
       <div className="hairline-gold" />
       <div className="container-x grid grid-cols-1 gap-12 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:py-20">
         <div>
-          <Logo />
+          <span className="inline-block rounded-2xl bg-white p-2.5"><Logo light={false} /></span>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/65">{t("footer.about")}</p>
           <div className="mt-6 flex flex-wrap gap-2">
             {["MKCL Approved", "Mindler Certified", "UT Austin Certified"].map((b) => (
@@ -22,6 +33,18 @@ export default function Footer() {
                 {b}
               </span>
             ))}
+          </div>
+          <div className="mt-6 flex items-center gap-2.5" aria-label={t("footer.social")} data-testid="footer-socials">
+            {SOCIALS.map(({ id, label, href, Icon }) => (
+              <a key={id} href={href} target="_blank" rel="noreferrer" aria-label={label} data-testid={`footer-social-${id}`}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/75 transition-all duration-200 hover:border-gold hover:text-gold">
+                <Icon className="h-4.5 w-4.5" style={{ width: 18, height: 18 }} />
+              </a>
+            ))}
+            <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" aria-label="WhatsApp Community" data-testid="footer-social-whatsapp"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/75 transition-all duration-200 hover:border-gold hover:text-gold">
+              <MessageCircle style={{ width: 18, height: 18 }} />
+            </a>
           </div>
         </div>
 
@@ -41,7 +64,7 @@ export default function Footer() {
         <nav aria-label={t("footer.programsTitle")}>
           <h3 className="eyebrow text-gold">{t("footer.programsTitle")}</h3>
           <ul className="mt-5 space-y-3 text-sm">
-            {featuredPrograms.map((p) => (
+            {featured.map((p) => (
               <li key={p.slug}>
                 <Link to={`/programs/${p.slug}`} className="text-white/75 transition-colors hover:text-gold" data-testid={`footer-program-${p.slug}`}>
                   {L(p.name)}

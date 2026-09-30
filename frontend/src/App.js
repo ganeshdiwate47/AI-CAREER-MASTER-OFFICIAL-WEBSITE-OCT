@@ -1,8 +1,9 @@
 import { Component } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { ProgramsProvider } from "@/context/ProgramsContext";
 import ScrollManager from "@/components/ScrollManager";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -15,6 +16,7 @@ import ForColleges from "@/pages/ForColleges";
 import Contact from "@/pages/Contact";
 import Privacy from "@/pages/Privacy";
 import Terms from "@/pages/Terms";
+import Admin from "@/pages/Admin";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -37,31 +39,44 @@ class ErrorBoundary extends Component {
   }
 }
 
+function Shell() {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith("/admin");
+  return (
+    <>
+      {!isAdmin && <Navbar />}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/programs" element={<Programs />} />
+          <Route path="/programs/:slug" element={<ProgramDetail />} />
+          <Route path="/colleges" element={<ForColleges />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      {!isAdmin && <Footer />}
+      {!isAdmin && <AiAssistant />}
+      <ScrollManager />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
       <LanguageProvider>
-        <HelmetProvider>
-          <BrowserRouter>
-            <ScrollManager />
-            <Navbar />
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/programs" element={<Programs />} />
-                <Route path="/programs/:slug" element={<ProgramDetail />} />
-                <Route path="/colleges" element={<ForColleges />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </main>
-            <Footer />
-            <AiAssistant />
-          </BrowserRouter>
-        </HelmetProvider>
+        <ProgramsProvider>
+          <HelmetProvider>
+            <BrowserRouter>
+              <Shell />
+            </BrowserRouter>
+          </HelmetProvider>
+        </ProgramsProvider>
       </LanguageProvider>
       <Toaster position="bottom-right" richColors closeButton />
     </ErrorBoundary>

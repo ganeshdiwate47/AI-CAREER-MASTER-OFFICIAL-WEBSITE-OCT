@@ -1,5 +1,5 @@
 import { useLang } from "@/i18n/LanguageContext";
-import { PROGRAMS } from "@/data/programs";
+import { FALLBACK_PROGRAMS as PROGRAMS } from "@/data/programs";
 
 // One slow, editorial marquee. Items render once per loop; the duplicate
 // track is aria-hidden and only exists to make the loop seamless.

@@ -61,7 +61,7 @@ export default function Hero() {
 
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.95, duration: 0.7 }} className="mt-9 flex flex-wrap items-center gap-4">
             <Link to="/programs" className="btn-primary" data-testid="hero-explore-cta">{t("hero.explore")}</Link>
-            <Link to="/colleges" className="btn-ghost-gold" data-testid="hero-partner-cta">{t("hero.partner")}</Link>
+            <Link to="/contact?form=strategy" className="btn-ghost-gold" data-testid="hero-partner-cta">{t("hero.partner")}</Link>
           </motion.div>
 
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.15, duration: 0.8 }} className="mt-10">

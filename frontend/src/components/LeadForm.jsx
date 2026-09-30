@@ -3,18 +3,20 @@ import { useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { CheckCircle2, Loader2, MessageCircle } from "lucide-react";
 import { useLang } from "@/i18n/LanguageContext";
-import { PROGRAMS } from "@/data/programs";
+import { usePrograms } from "@/context/ProgramsContext";
 import { CONTACT } from "@/data/site";
 
 // Reusable lead form. variant: "student" | "college" | "strategy"
-// Leads POST to the site backend (/api/leads), which stores them and —
-// when configured by the owner via env vars — relays to Google Forms / CRM.
+// Leads POST to the site backend (/api/leads): stored in MongoDB first, then
+// relayed to Google Forms / Coacheasily when the owner configures them via env.
 export default function LeadForm({ variant = "student", defaultProgram = "", dark = false, testId }) {
   const { t, L, lang } = useLang();
+  const { programs } = usePrograms();
   const location = useLocation();
   const [form, setForm] = useState({
-    name: "", phone: "", email: "", program: defaultProgram || "",
+    name: "", phone: "", email: "", program: defaultProgram || "", city: "",
     org: "", role: "", interest: "", status: "", message: "", consent: false,
+    preferred_language: "", student_count: "", business_type: "", main_challenge: "", ai_applications: "",
   });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
@@ -37,9 +39,12 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
   const validate = () => {
     const er = {};
     if (!form.name || form.name.trim().length < 2) er.name = t("forms.shared.errRequired");
-    const digits = form.phone.replace(/\D/g, "").slice(-10);
     if (!form.phone) er.phone = t("forms.shared.errRequired");
-    else if (!/^[6-9]\d{9}$/.test(digits)) er.phone = t("forms.shared.errPhone");
+    else {
+      const digits = form.phone.replace(/\D/g, "");
+      const last10 = digits.slice(-10);
+      if (!/^[6-9]\d{9}$/.test(last10) || digits.length > 12) er.phone = t("forms.shared.errPhone");
+    }
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) er.email = t("forms.shared.errEmail");
     if (variant === "college" && !form.org.trim()) er.org = t("forms.shared.errRequired");
     if (variant !== "student" && !form.email.trim()) er.email = t("forms.shared.errRequired");
@@ -49,6 +54,7 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
 
   const submit = async (e) => {
     e.preventDefault();
+    if (status === "sending") return; // prevent double submits
     const er = validate();
     setErrors(er);
     if (Object.keys(er).length) return;
@@ -58,13 +64,18 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          lead_type: variant, ...form, phone_country_code: "+91",
+          lead_type: variant, ...form,
+          phone_country_code: "+91",
+          audience_category: variant, preferred_language: form.preferred_language || lang,
           lang, page: location.pathname, utm,
         }),
       });
       if (!res.ok) throw new Error("submit failed");
+      const data = await res.json();
+      if (!data.ok || !data.stored) throw new Error("not saved");
       setStatus("done");
-      toast.success(t("forms.shared.successTitle"));
+      if (data.duplicate) toast.success(t("forms.shared.duplicateTitle"));
+      else toast.success(t("forms.shared.successTitle"));
     } catch {
       setStatus("error");
       toast.error(t("forms.shared.errGeneric"));
@@ -72,7 +83,7 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
   };
 
   const inputCls = (bad) =>
-    `w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors duration-200 placeholder:text-current/40 ${
+    `w-full rounded-xl border px-4 py-3 text-sm outline-none transition-colors duration-200 ${
       dark
         ? `border-white/20 bg-white/10 text-white focus:border-gold ${bad ? "border-red-400" : ""}`
         : `border-input bg-white text-navy focus:border-royal ${bad ? "border-red-400" : ""}`
@@ -80,6 +91,7 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
   const labelCls = `mb-1.5 block text-xs font-bold uppercase tracking-wider ${dark ? "text-white/70" : "text-navy/70"}`;
   const errCls = "mt-1 text-xs font-semibold text-red-400";
   const idp = (f) => `${variant}-${f}`;
+  const isVyapari = form.program === "ai-for-vyapari";
 
   if (status === "done") {
     return (
@@ -95,12 +107,7 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
   }
 
   return (
-    <form
-      onSubmit={submit}
-      noValidate
-      data-testid={testId || `lead-form-${variant}`}
-      className="space-y-4"
-    >
+    <form onSubmit={submit} noValidate data-testid={testId || `lead-form-${variant}`} className="space-y-4">
       <input type="hidden" name="lead_type" value={variant} />
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
@@ -126,6 +133,14 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
             <label htmlFor={idp("role")} className={labelCls}>{t("forms.college.role")}</label>
             <input id={idp("role")} data-testid={`lead-input-${variant}-role`} className={inputCls()} placeholder={t("forms.college.rolePh")} value={form.role} onChange={set("role")} />
           </div>
+          <div>
+            <label htmlFor={idp("students")} className={labelCls}>{t("forms.college.students")}</label>
+            <input id={idp("students")} data-testid={`lead-input-${variant}-students`} className={inputCls()} placeholder={t("forms.college.studentsPh")} value={form.student_count} onChange={set("student_count")} inputMode="numeric" />
+          </div>
+          <div>
+            <label htmlFor={idp("city")} className={labelCls}>{t("forms.shared.city")}</label>
+            <input id={idp("city")} data-testid={`lead-input-${variant}-city`} className={inputCls()} placeholder={t("forms.shared.cityPh")} value={form.city} onChange={set("city")} />
+          </div>
         </div>
       )}
 
@@ -135,15 +150,28 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
           <input id={idp("email")} type="email" data-testid={`lead-input-${variant}-email`} className={inputCls(!!errors.email)} placeholder={t("forms.shared.emailPh")} value={form.email} onChange={set("email")} autoComplete="email" />
           {errors.email && <p className={errCls} role="alert">{errors.email}</p>}
         </div>
+        <div>
+          <label htmlFor={idp("lang")} className={labelCls}>{t("forms.shared.prefLang")}</label>
+          <select id={idp("lang")} data-testid={`lead-select-${variant}-lang`} className={inputCls()} value={form.preferred_language || lang} onChange={set("preferred_language")}>
+            <option value="en">{t("forms.shared.langEn")}</option>
+            <option value="mr">{t("forms.shared.langMr")}</option>
+          </select>
+        </div>
         {variant === "student" && (
           <div>
             <label htmlFor={idp("program")} className={labelCls}>{t("forms.shared.program")}</label>
             <select id={idp("program")} data-testid={`lead-select-${variant}-program`} className={inputCls()} value={form.program} onChange={set("program")}>
               <option value="">{t("forms.shared.programAny")}</option>
-              {PROGRAMS.map((p) => (
+              {programs.map((p) => (
                 <option key={p.slug} value={p.slug}>{L(p.name)} — {L(p.tag)}</option>
               ))}
             </select>
+          </div>
+        )}
+        {variant === "student" && (
+          <div>
+            <label htmlFor={idp("city")} className={labelCls}>{t("forms.shared.city")}</label>
+            <input id={idp("city")} data-testid={`lead-input-${variant}-city`} className={inputCls()} placeholder={t("forms.shared.cityPh")} value={form.city} onChange={set("city")} />
           </div>
         )}
         {variant === "college" && (
@@ -169,6 +197,24 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
           </div>
         )}
       </div>
+
+      {isVyapari && (
+        <div className="grid gap-4 rounded-2xl border border-orange/30 bg-orange/5 p-4 sm:grid-cols-2" data-testid="vyapari-fields">
+          <p className="text-xs font-bold uppercase tracking-wider text-orange sm:col-span-2">{t("forms.vyapari.title")}</p>
+          <div>
+            <label htmlFor={idp("btype")} className={labelCls}>{t("forms.vyapari.businessType")}</label>
+            <input id={idp("btype")} data-testid={`lead-input-${variant}-business-type`} className={inputCls()} placeholder={t("forms.vyapari.businessTypePh")} value={form.business_type} onChange={set("business_type")} />
+          </div>
+          <div>
+            <label htmlFor={idp("aiapp")} className={labelCls}>{t("forms.vyapari.applications")}</label>
+            <input id={idp("aiapp")} data-testid={`lead-input-${variant}-ai-applications`} className={inputCls()} placeholder={t("forms.vyapari.applicationsPh")} value={form.ai_applications} onChange={set("ai_applications")} />
+          </div>
+          <div className="sm:col-span-2">
+            <label htmlFor={idp("chal")} className={labelCls}>{t("forms.vyapari.challenge")}</label>
+            <input id={idp("chal")} data-testid={`lead-input-${variant}-main-challenge`} className={inputCls()} placeholder={t("forms.vyapari.challengePh")} value={form.main_challenge} onChange={set("main_challenge")} />
+          </div>
+        </div>
+      )}
 
       <div>
         <label htmlFor={idp("message")} className={labelCls}>{t("forms.shared.messageOpt")}</label>
