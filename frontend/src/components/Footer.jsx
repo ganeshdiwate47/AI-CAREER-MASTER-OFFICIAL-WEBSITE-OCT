@@ -92,9 +92,10 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="container-x flex flex-col items-center justify-between gap-3 py-6 text-xs text-white/50 sm:flex-row">
           <p>© {year} {t("footer.rights")}</p>
-          <div className="flex items-center gap-6">
-            <Link to="/privacy" className="hover:text-gold" data-testid="footer-privacy">{t("pages.privacy.title")}</Link>
-            <Link to="/terms" className="hover:text-gold" data-testid="footer-terms">{t("pages.terms.title")}</Link>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link to="/privacy-policy" className="hover:text-gold" data-testid="footer-privacy">{t("pages.privacy.title")}</Link>
+            <Link to="/refund-policy" className="hover:text-gold" data-testid="footer-refund">{t("pages.refund.title")}</Link>
+            <Link to="/terms-and-conditions" className="hover:text-gold" data-testid="footer-terms">{t("pages.terms.title")}</Link>
             <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-gold/90 hover:text-gold" data-testid="footer-join-cta">
               {t("nav.cta")} <ArrowUpRight className="h-3.5 w-3.5" />
             </a>

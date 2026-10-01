@@ -16,6 +16,7 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
   const [form, setForm] = useState({
     name: "", phone: "", email: "", program: defaultProgram || "", city: "",
     org: "", role: "", interest: "", status: "", message: "", consent: false,
+    marketing_consent: false,
     preferred_language: "", student_count: "", business_type: "", main_challenge: "", ai_applications: "",
   });
   const [errors, setErrors] = useState({});
@@ -225,15 +226,26 @@ export default function LeadForm({ variant = "student", defaultProgram = "", dar
         <input type="checkbox" checked={form.consent} onChange={set("consent")} className="mt-0.5 h-4 w-4 shrink-0 accent-orange" data-testid={`lead-consent-checkbox-${variant}`} />
         <span>
           {t("forms.shared.consent")}{" "}
-          <a href="/privacy" className={`underline ${dark ? "text-gold" : "text-royal"}`}>{t("pages.privacy.title")}</a>
+          <a href="/privacy-policy" target="_blank" className={`underline ${dark ? "text-gold" : "text-royal"}`}>{t("pages.privacy.title")}</a>
         </span>
       </label>
       {errors.consent && <p className={errCls} role="alert">{errors.consent}</p>}
+
+      <label className={`flex items-start gap-3 text-xs leading-relaxed ${dark ? "text-white/70" : "text-muted-foreground"}`} data-testid={`lead-marketing-${variant}`}>
+        <input type="checkbox" checked={form.marketing_consent} onChange={set("marketing_consent")} className="mt-0.5 h-4 w-4 shrink-0 accent-royal" data-testid={`lead-marketing-checkbox-${variant}`} />
+        <span>{t("forms.shared.marketing")}</span>
+      </label>
 
       <button type="submit" disabled={status === "sending"} data-testid="lead-form-submit" className="btn-primary w-full disabled:opacity-60">
         {status === "sending" ? (<><Loader2 className="h-4 w-4 animate-spin" />{t("forms.shared.submitting")}</>) : t("forms.shared.submit")}
       </button>
       {status === "error" && <p className="text-center text-xs font-semibold text-red-400" role="alert">{t("forms.shared.errGeneric")}</p>}
+      <p className={`text-center text-[11px] leading-relaxed ${dark ? "text-white/50" : "text-muted-foreground"}`} data-testid={`lead-policy-links-${variant}`}>
+        {t("forms.shared.bySubmit")}{" "}
+        <a href="/privacy-policy" target="_blank" className={`underline ${dark ? "text-gold" : "text-royal"}`}>{t("pages.privacy.title")}</a>,{" "}
+        <a href="/terms-and-conditions" target="_blank" className={`underline ${dark ? "text-gold" : "text-royal"}`}>{t("pages.terms.title")}</a> {t("misc.and")}{" "}
+        <a href="/refund-policy" target="_blank" className={`underline ${dark ? "text-gold" : "text-royal"}`}>{t("pages.refund.title")}</a>.
+      </p>
       <p className={`text-center text-[11px] ${dark ? "text-white/50" : "text-muted-foreground"}`}>{t("sections.cta.secure")}</p>
     </form>
   );

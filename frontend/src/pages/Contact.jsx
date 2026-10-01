@@ -46,9 +46,9 @@ export default function Contact() {
               const Inner = (
                 <>
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-royal/10 text-royal"><c.icon className="h-5 w-5" /></span>
-                  <span>
+                  <span className="min-w-0">
                     <span className="block text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{c.title}</span>
-                    <span className="mt-0.5 block text-sm font-bold text-navy break-words">{c.body}</span>
+                    <span className="mt-0.5 block text-sm font-bold text-navy [overflow-wrap:anywhere]">{c.body}</span>
                   </span>
                 </>
               );

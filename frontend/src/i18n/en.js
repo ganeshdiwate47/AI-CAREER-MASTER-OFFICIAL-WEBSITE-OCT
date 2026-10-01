@@ -160,6 +160,8 @@ const en = {
         "Thank you — our team will call you within 24 hours. Keep your phone nearby!",
       duplicateTitle: "Already received!",
       duplicateBody: "We already have your enquiry — our team will call you within 24 hours.",
+      marketing: "Send me occasional program updates, offers and announcements on WhatsApp, SMS or email (optional).",
+      bySubmit: "By submitting, you agree to our",
       errRequired: "This field is required",
       errPhone: "Enter a valid 10-digit mobile number",
       errEmail: "Enter a valid email address",
@@ -287,9 +289,12 @@ const en = {
       title: "Privacy Policy",
       updated: "Last updated: January 2026",
     },
+    refund: {
+      title: "Refund & Cancellation Policy",
+    },
     terms: {
       eyebrow: "Legal",
-      title: "Terms of Service",
+      title: "Terms & Conditions",
       updated: "Last updated: January 2026",
     },
   },
@@ -317,6 +322,8 @@ const en = {
     placeholderTag: "Placeholder",
     placeholderPhoto: "Original photo coming soon",
     placeholderStat: "Verified figure coming soon",
+    backHome: "Back to Home",
+    and: "and",
   },
   ai: {
     open: "Ask AI Assistant",

@@ -38,6 +38,9 @@ Build Version 1.0 of the official AI Career Master website (AI Powered Career Ac
 - Social footer links (Instagram/Facebook/LinkedIn-derived/YouTube/WhatsApp), sitemap.xml, canonical support via REACT_APP_PUBLIC_URL.
 - CRM adapter layer (Coacheasily-first, modular) with documented field mapping — inactive until account verification.
 
+## Implemented (2026-10-01) — Policy publication update
+- Three owner-supplied legal policies published verbatim (SHRIVAI Technologies, updated 21 Sep 2026) at /privacy-policy, /refund-policy, /terms-and-conditions (old /privacy & /terms redirect). Footer legal links updated globally; every lead form shows a policy-links row under submit + split consent: required contact consent (with Privacy link) and a separate optional marketing-consent checkbox (stored as marketing_consent). Program enquiry card acts as the pre-enrolment/pricing area with the same links. Mobile overflow on /contact (WhatsApp URL) fixed; Reveal now forwards data-testid.
+
 ## Prioritized Backlog
 - P0: Configure Google Forms env vars (owner supplies formResponse URL + entry IDs); Coacheasily capability audit before connecting; deploy to Hostinger.
 - P1: Owner content pass (photos/testimonials/figures), sitemap.xml + OG image, WhatsApp chat API button tracking.

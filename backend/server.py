@@ -65,6 +65,7 @@ class LeadIn(BaseModel):
     business_type: Optional[str] = Field(default=None, max_length=200)
     main_challenge: Optional[str] = Field(default=None, max_length=1000)
     ai_applications: Optional[str] = Field(default=None, max_length=1000)
+    marketing_consent: bool = False
     utm: Dict[str, str] = Field(default_factory=dict)
 
     @field_validator("consent")

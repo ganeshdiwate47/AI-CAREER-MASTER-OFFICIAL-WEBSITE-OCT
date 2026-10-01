@@ -14,8 +14,9 @@ import Programs from "@/pages/Programs";
 import ProgramDetail from "@/pages/ProgramDetail";
 import ForColleges from "@/pages/ForColleges";
 import Contact from "@/pages/Contact";
-import Privacy from "@/pages/Privacy";
-import Terms from "@/pages/Terms";
+import Privacy from "@/pages/PolicyPage";
+import Terms from "@/pages/PolicyPage";
+import { POLICIES } from "@/data/policies";
 import Admin from "@/pages/Admin";
 
 class ErrorBoundary extends Component {
@@ -53,8 +54,11 @@ function Shell() {
           <Route path="/programs/:slug" element={<ProgramDetail />} />
           <Route path="/colleges" element={<ForColleges />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy-policy" element={<Privacy policyKey="privacy" />} />
+          <Route path="/refund-policy" element={<Terms policyKey="refund" />} />
+          <Route path="/terms-and-conditions" element={<Terms policyKey="terms" />} />
+          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+          <Route path="/terms" element={<Navigate to="/terms-and-conditions" replace />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
